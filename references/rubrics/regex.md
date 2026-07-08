@@ -8,9 +8,12 @@ World-class bar for a regular expression. Reject on doubt.
 - **Catastrophic backtracking (ReDoS).** Reject any pattern that can backtrack catastrophically on adversarial input. Nested quantifiers like `(a+)+`, `(a*)*`, `(.*)*`, or overlapping alternation under a quantifier are the classic flaw class. If present, it is a blocking FAIL with a safer linear rewrite.
 - **Anchoring and scope.** Whole-string vs substring, `^`/`$` vs `\b`, and the flags (`i`, `m`, `g`, `s`) must match the stated intent. A silent whole-string-vs-substring mismatch is blocking.
 
+- **Plain-English breakdown required.** The answer must walk through each token and each group and say what it does, so the reader could recreate the pattern themselves. A regex handed over without a breakdown teaches nothing and cannot be maintained. No breakdown = FAIL. (Harvested from prompt #17; it was absent from this rubric until the coverage gate caught it.)
+
 ## Quality checks
 - Simplest correct pattern over a clever dense one. Unreadable = a finding.
-- Unicode / encoding handling stated where it matters.
+- The exact flags to use, and a one-line snippet showing how to call it in the target language.
+- Unicode / encoding handling stated where it matters. Empty input and greediness considered.
 - Escaping correct for the target flavor when embedded in code.
 - If a regex is the wrong tool for the job, the answer says so and names the better approach.
 
