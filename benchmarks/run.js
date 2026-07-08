@@ -1,5 +1,5 @@
 'use strict';
-// Deterministic benchmark suite. No LLM — these prove the machinery, not the judgment.
+// Deterministic benchmark suite. No LLM, these prove the machinery, not the judgment.
 const assert = require('assert');
 const blind = require('../lib/blind');
 const ledger = require('../lib/ledger');

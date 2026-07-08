@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 'use strict';
-// zoilus — the merciless critic. Deterministic CLI half (zero-LLM): blind-contract,
+// zoilus, the merciless critic. Deterministic CLI half (zero-LLM): blind-contract,
 // verdict ledger, loop budget, rubric packs, schema check, setup. The judgment
 // itself is skill-driven (see SKILL.md); this is the machinery the skill leans on.
 const fs = require('fs');
@@ -61,7 +61,7 @@ switch (cmd) {
     if (!file || !fs.existsSync(file)) { out('usage: zoilus check <verdict.md>'); process.exit(1); }
     const rec = ledger.parse(fs.readFileSync(file, 'utf8'));
     const { ok, errors } = ledger.validate(rec);
-    out(ok ? 'OK — verdict record valid' : 'INVALID:\n' + errors.map((e) => '  - ' + e).join('\n'));
+    out(ok ? 'OK, verdict record valid' : 'INVALID:\n' + errors.map((e) => '  - ' + e).join('\n'));
     process.exit(ok ? 0 : 1);
     break;
   }
@@ -116,7 +116,7 @@ switch (cmd) {
     const s = siblings.detect();
     out('installed: ' + (s.installed.join(', ') || 'none'));
     const rec = siblings.recommend(s.installed);
-    out('recommended (missing pairs): ' + (rec.map((r) => r.name).join(', ') || 'none — all set'));
+    out('recommended (missing pairs): ' + (rec.map((r) => r.name).join(', ') || 'none, all set'));
     break;
   }
 
@@ -161,7 +161,7 @@ switch (cmd) {
   }
 
   default:
-    out(`zoilus ${pkg.version} — the merciless critic`);
+    out(`zoilus ${pkg.version}, the merciless critic`);
     out('');
     out('  zoilus strip <file> [--report]   blind-contract: strip maker reasoning');
     out('  zoilus rubric [name]             show a rubric pack (or list them)');

@@ -2,7 +2,7 @@
 
 ![Zoilus, the scourge of Homer, reading a draft he intends to fail](assets/hero.png)
 
-# ZOILUS: the merciless critic
+# ZOILUS: Zero-Indulgence Oversight, Independent Loop, Unsparing Scrutiny
 
 *Your AI grades its own homework. ZOILUS is the examiner who fails it.*
 
