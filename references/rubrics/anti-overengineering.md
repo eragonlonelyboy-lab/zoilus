@@ -3,7 +3,7 @@
 World-class bar for a technical approach or stack choice: the simplest thing that ships THIS project, matched to the maker's skill and constraints. Reject resume-driven architecture.
 
 ## Blocking checks
-- **"Deliberately NOT using" is stated.** A world-class recommendation names the popular tools and patterns it is avoiding — microservices, Kubernetes, a message queue, a separate mobile app, premature caching — each with one line on why it is overkill *here*. If the choice cannot say what it is refusing, it has not been reasoned. (Discipline harvested from prompt #73.)
+- **"Deliberately NOT using" is stated.** A world-class recommendation names the popular tools and patterns it is avoiding, microservices, Kubernetes, a message queue, a separate mobile app, premature caching, each with one line on why it is overkill *here*. If the choice cannot say what it is refusing, it has not been reasoned. (Discipline harvested from prompt #73.)
 - **Matched to the maker.** The stack fits the stated skill level and top priorities (speed to launch, low cost, solo-maintainable, hireable-later), not what is trendy. A mismatch is a blocking finding.
 
 ## Quality checks

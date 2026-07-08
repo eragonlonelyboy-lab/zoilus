@@ -1,6 +1,6 @@
 # Rubric: copy-critique
 
-World-class bar for written copy — a landing page, README, launch post, pitch line, any prose meant to hold a reader. Read it as a bored, skeptical, time-poor person who clicks away the instant they are bored or sense a sell. Reject on doubt.
+World-class bar for written copy, a landing page, README, launch post, pitch line, any prose meant to hold a reader. Read it as a bored, skeptical, time-poor person who clicks away the instant they are bored or sense a sell. Reject on doubt.
 
 ## Intake (required before reading)
 The intended reader and goal must be supplied so the skepticism is calibrated: who this is for, and what the writer wants them to do. Without it the critic is grading prose in a vacuum and will call a line weak that is exactly right for its reader. If it is missing, ask for it before judging.
@@ -8,7 +8,7 @@ The intended reader and goal must be supplied so the skepticism is calibrated: w
 ## Blocking checks
 - **The drop-off line.** Name the exact line or moment where a skeptical reader stops reading or loses the thread. Every piece has one; if the critique cannot point to it, the review is incomplete. A piece whose drop-off comes in the first two lines is a blocking FAIL.
 - **Dead weight.** Sentences that carry no idea, hedge, or restate. Flag them for the cut.
-- **Generic-anywhere test.** If a line could appear unchanged on a competitor's page (or for any product in any industry), it fails — rewrite until it could only belong to this one.
+- **Generic-anywhere test.** If a line could appear unchanged on a competitor's page (or for any product in any industry), it fails, rewrite until it could only belong to this one.
 
 - **"eye-rolls".** Quote anything that made the reader wince or distrust the writer: hype, cliches, unsupported claims, humble-brags, long throat-clearing intros, "in today's fast-paced world". A piece the reader stops trusting is dead whether or not they finish it.
 

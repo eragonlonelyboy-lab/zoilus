@@ -1,4 +1,4 @@
-# LOGOS — the prompt engine
+# LOGOS: the prompt engine
 
 LOGOS forges instructions. It is an engine inside ZOILUS (also callable standalone). Three modes; the creative rewrite is yours to perform, the re-forge scaffolding is deterministic (`lib/logos.js`).
 
@@ -47,9 +47,9 @@ If the goal is unclear enough to change the rewrite, ask up to 2 clarifying ques
 3. **Clarifying questions to embed**: the 1-3 questions the AI should ask the user before answering, written into the prompt itself.
 4. **"key upgrades"**: one line each naming what changed and why it improves the result.
 
-## Re-forge (the loop step — deterministic scaffold)
+## Re-forge (the loop step: deterministic scaffold)
 Inside a ZOILUS review loop, when the panel returns FAIL, LOGOS folds the named failures into the producer's instruction as explicit MUST-FIX constraints so the next attempt cannot repeat them.
 
-`lib/logos.js` → `forgeRetry(priorPrompt, failures)` appends a `## MUST FIX` block listing every failure; `isReforged(prior, next)` asserts the instruction actually changed (a loop-safety invariant — a re-forge that changes nothing is a bug, not a pass).
+`lib/logos.js` → `forgeRetry(priorPrompt, failures)` appends a `## MUST FIX` block listing every failure; `isReforged(prior, next)` asserts the instruction actually changed (a loop-safety invariant, a re-forge that changes nothing is a bug, not a pass).
 
 The creative improvement of the producer's own reasoning is the LLM's job; injecting the failures as hard constraints is deterministic and testable.
