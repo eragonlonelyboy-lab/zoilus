@@ -1,0 +1,13 @@
+{
+  "name": "demiurge-zoilus",
+  "version": "0.1.0",
+  "description": "The merciless critic. Your AI grades its own homework; ZOILUS is the examiner who fails it.",
+  "bin": { "zoilus": "bin/zoilus.js" },
+  "scripts": {
+    "test": "node benchmarks/run.js"
+  },
+  "keywords": ["ai", "code-review", "critic", "adversarial", "quality", "claude", "agent-skill", "demiurge"],
+  "author": "Eragon Lee",
+  "license": "MIT",
+  "files": ["bin", "lib", "references", "docs", "SKILL.md", "CLAUDE.md", "LICENSE", "README.md"]
+}
