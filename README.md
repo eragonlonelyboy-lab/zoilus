@@ -129,6 +129,10 @@ ZOILUS is a [Demiurge](https://github.com/eragonlonelyboy-lab/demiurge) product.
 | **ATHENA** | Decision trials with verdicts on the record: judges the choice, where ZOILUS judges the work |
 | **CALLIOPE** | A full design agency in the terminal, gated by a QA lead who does not accept "looks fine" |
 | **VERITAS** | Slop-free prose that audits its own output |
+| **HYPNOS** | Memory consolidation in your agents' sleep: every change a diff, nothing deleted |
+| **MAAT** | Multi-agent attention terminal: receipts across every session |
+| **PEITHO** | Go-to-market: ZOILUS judges the copy PEITHO writes, and never its own |
+| **PYRRHO** | The skeptic: owns what the numbers say, where ZOILUS owns whether the craft holds |
 
 ## The fair trade
 
