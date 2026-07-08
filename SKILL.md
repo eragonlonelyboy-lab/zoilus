@@ -52,6 +52,13 @@ Each lens judges against a pack in `references/rubrics/`. Harvested disciplines 
 - **anti-overengineering** — names the overkill being avoided ("deliberately NOT using") and the decision safe to defer.
 - **code / prose / data / edge-cases / correctness / security / generic** — the standing bars.
 
+## Lenses (interactive, not blind)
+
+A **rubric** is blind and non-interactive: a critic gets the artifact plus the bar, scores it, returns. A **lens** is interactive and runs WITH the human, outside the blind panel, because it must ask questions, wait for results, and surface assumptions, which law 1 gives a blind critic no channel to do. Lenses live in `references/lenses/` (see its README for the conflict and the resolution):
+
+- **debug** (`references/lenses/debug.md`, harvested #15): the calm Socratic debugging partner. Pin down the gap, ranked hypotheses, test one at a time, isolate, root cause and lesson.
+- **explain-code** (`references/lenses/explain-code.md`, harvested #142): the patient staff engineer. The gist, guided walkthrough in execution order, senior-engineer view, the one concept to learn.
+
 ## Boundaries (do not blur the pantheon)
 
 - **HORKOS** proves you *did* it (receipts). **ZOILUS** proves it is *good* (judgment). Pair them.

@@ -222,7 +222,22 @@ t('route: prose -> veritas when installed, native when not', () => {
 // --- LOGOS construct/refine scaffolds (ZOI-06) ---
 t('LOGOS construct skeleton carries the required structure', () => {
   const s = logos.constructSkeleton('review pull requests');
-  for (const part of ['EXPERT ROLE', 'clarifying question', 'Constraints', 'Output format', 'PLACEHOLDERS', 'review pull requests']) {
+  for (const part of [
+    'Role:',
+    'EXPERT ROLE',
+    'Context:',
+    'clarifying question',
+    'Tone and personality',
+    'ALWAYS:',
+    'NEVER:',
+    'outside its scope',
+    'Constraints',
+    'Output format',
+    'Worked example',
+    'Tuning notes',
+    'PLACEHOLDERS',
+    'review pull requests',
+  ]) {
     assert(s.includes(part), 'construct skeleton missing: ' + part);
   }
 });
