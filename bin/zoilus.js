@@ -10,6 +10,9 @@ const ledger = require('../lib/ledger');
 const rubrics = require('../lib/rubrics');
 const { Budget } = require('../lib/budget');
 const logos = require('../lib/logos');
+const verdict = require('../lib/verdict');
+const siblings = require('../lib/siblings');
+const { runLoop, makeBudget } = require('../lib/loop');
 
 const pkg = require('../package.json');
 const args = process.argv.slice(2);
@@ -80,16 +83,64 @@ switch (cmd) {
 
   case 'setup': {
     const has = (p) => fs.existsSync(path.join(__dirname, '..', p));
+    const sib = siblings.detect();
     out('ZOILUS setup check');
     out('------------------');
     out(`  rubric packs present : ${rubrics.available().length}  (${rubrics.available().join(', ') || 'none'})`);
     out(`  SKILL.md             : ${has('SKILL.md') ? 'yes' : 'MISSING'}`);
     out(`  companion CLAUDE.md  : ${has('CLAUDE.md') ? 'yes' : 'MISSING'}`);
     out(`  verdict dir          : ${VERDICT_DIR} ${fs.existsSync(VERDICT_DIR) ? '(exists)' : '(created on first verdict)'}`);
+    out(`  siblings installed   : ${sib.installed.join(', ') || 'none'}`);
+    const rec = siblings.recommend(sib.installed);
+    if (rec.length) { out('  recommended (missing):'); for (const r of rec) out(`    - ${r.name}: ${r.why}`); }
     out('');
     out('ZOILUS is skill-first: invoke it in Claude Code with /zoilus or "have ZOILUS review this".');
     out('This CLI provides the deterministic machinery (blind-contract, ledger, budget, rubric packs).');
-    out('Budget defaults: 3 iterations. Set a token ceiling via MONETA (ZOILUS composes with it).');
+    out('Budget defaults: 3 iterations. Token ceiling read from MONETA (ZOILUS composes with it).');
+    break;
+  }
+
+  case 'forge': {
+    if (args.includes('--refine')) {
+      const file = readArg('--refine');
+      const text = file && fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
+      out(logos.refineScaffold(text));
+    } else {
+      const job = readArg('--construct') || args.slice(1).join(' ');
+      out(logos.constructSkeleton(job));
+    }
+    break;
+  }
+
+  case 'siblings': {
+    const s = siblings.detect();
+    out('installed: ' + (s.installed.join(', ') || 'none'));
+    const rec = siblings.recommend(s.installed);
+    out('recommended (missing pairs): ' + (rec.map((r) => r.name).join(', ') || 'none — all set'));
+    break;
+  }
+
+  case 'route': {
+    const lens = args[1];
+    if (!lens) { out('usage: zoilus route <lens>  (e.g. prose, copy-critique, design, completion)'); break; }
+    out(`${lens} -> ${siblings.routeLens(lens)}`);
+    break;
+  }
+
+  case 'loop-demo': {
+    // a real fail-then-pass loop with injected produce/review stubs (proves orchestration)
+    const b = makeBudget({ maxIterations: 4 });
+    runLoop({
+      prompt: 'Write a regex to match an email.',
+      produce: (p) => (/MUST FIX/.test(p) ? '^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$' : '(.+)+@(.+)+'),
+      review: (artifact) => /\(\.\+\)\+|\(a\+\)\+/.test(artifact)
+        ? { verdict: 'FAIL', failures: [{ severity: 'blocking', summary: 'catastrophic backtracking (nested quantifier)' }], tokens: 500 }
+        : { verdict: 'PASS', failures: [], tokens: 500 },
+      budget: b,
+    }).then((res) => {
+      out(`loop result: ${res.verdict} in ${res.iterations} iteration(s)` + (res.stopped ? ` (stopped: ${res.stopped})` : ''));
+      res.history.forEach((h) => out(`  iter ${h.iteration}: ${h.verdict} (${h.failCount} failure(s))`));
+    });
     break;
   }
 
@@ -115,8 +166,12 @@ switch (cmd) {
     out('  zoilus strip <file> [--report]   blind-contract: strip maker reasoning');
     out('  zoilus rubric [name]             show a rubric pack (or list them)');
     out('  zoilus lenses <artifactType>     which lenses judge this artifact type');
+    out('  zoilus forge --construct "<job>" LOGOS: scaffold a reusable prompt');
+    out('  zoilus forge --refine <file>     LOGOS: scaffold a prompt rewrite');
     out('  zoilus check <verdict.md>        validate a verdict record');
     out('  zoilus ledger list               list recorded verdicts');
+    out('  zoilus siblings                  detect installed Demiurge gods');
+    out('  zoilus route <lens>              which god judges this lens');
     out('  zoilus setup                     state-aware setup readout');
     out('');
     out('The judgment is skill-driven: /zoilus in Claude Code. This CLI is the machinery.');

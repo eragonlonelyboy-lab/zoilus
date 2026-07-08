@@ -6,9 +6,16 @@ const ledger = require('../lib/ledger');
 const rubrics = require('../lib/rubrics');
 const logos = require('../lib/logos');
 const { Budget } = require('../lib/budget');
+const verdict = require('../lib/verdict');
+const siblings = require('../lib/siblings');
+const { runLoop, makeBudget } = require('../lib/loop');
+const os = require('os');
+const fs = require('fs');
+const path = require('path');
 
 let pass = 0, fail = 0;
-function t(name, fn) { try { fn(); pass++; console.log('  ok  ' + name); } catch (e) { fail++; console.log('FAIL  ' + name + '\n      ' + e.message); } }
+const tests = [];
+function t(name, fn) { tests.push({ name, fn }); } // register; run sequentially below (async-aware)
 
 // --- blind-to-maker contract ---
 t('blind strips a maker reasoning section, keeps the artifact', () => {
@@ -129,5 +136,107 @@ t('planted flaw: a regex with (a+)+ is exactly what the ReDoS rubric flags', () 
   assert(/\(a\+\)\+|nested/.test(r) || /backtrack/.test(r));
 });
 
-console.log('\n' + pass + '/' + (pass + fail) + ' passed');
-process.exit(fail ? 1 : 0);
+// --- numeric world-class bar + confidence (ZOI-04) ---
+t('verdict: a lens below the bar fails even with no blocking failure', () => {
+  const r = verdict.computeVerdict([{ lens: 'code', score: 6, failures: [] }]);
+  assert.strictEqual(r.verdict, 'FAIL');
+});
+t('verdict: a blocking failure fails even at a high score', () => {
+  const r = verdict.computeVerdict([{ lens: 'code', score: 10, failures: [{ severity: 'blocking', summary: 'x' }] }]);
+  assert.strictEqual(r.verdict, 'FAIL');
+});
+t('verdict: all lenses at/above bar with no blocking = PASS, no averaging', () => {
+  const r = verdict.computeVerdict([{ lens: 'code', score: 9, failures: [] }, { lens: 'security', score: 8, failures: [] }]);
+  assert.strictEqual(r.verdict, 'PASS');
+  // one weak lens must sink it even if the other is perfect (no averaging)
+  const r2 = verdict.computeVerdict([{ lens: 'code', score: 10, failures: [] }, { lens: 'security', score: 4, failures: [] }]);
+  assert.strictEqual(r2.verdict, 'FAIL');
+});
+t('verdict: confidence is 0..1 and rises with more blocking failures', () => {
+  const a = verdict.computeVerdict([{ lens: 'code', score: 7, failures: [{ severity: 'blocking', summary: 'x' }] }]);
+  const b = verdict.computeVerdict([{ lens: 'code', score: 7, failures: [{ severity: 'blocking', summary: 'x' }, { severity: 'blocking', summary: 'y' }] }]);
+  assert(a.confidence >= 0 && a.confidence <= 1 && b.confidence <= 1);
+  assert(b.confidence > a.confidence, 'more blocking => more confident FAIL');
+});
+t('verdict: taste-heavy types use a lower bar than code', () => {
+  assert(verdict.barFor('prose') < verdict.barFor('code'));
+});
+
+// --- loop runner + MONETA cap (ZOI-07) ---
+t('loop: fail then pass converges in 2 iterations', async () => {
+  const res = await runLoop({
+    prompt: 'make a thing',
+    produce: (p) => (/MUST FIX/.test(p) ? 'fixed thing' : 'broken thing'),
+    review: (a) => (a === 'fixed thing' ? { verdict: 'PASS', failures: [], tokens: 10 } : { verdict: 'FAIL', failures: [{ severity: 'blocking', summary: 'broken' }], tokens: 10 }),
+    budget: makeBudget({ maxIterations: 4 }),
+  });
+  assert.strictEqual(res.verdict, 'PASS');
+  assert.strictEqual(res.iterations, 2);
+});
+t('loop: a never-passing producer halts at the iteration cap, not forever', async () => {
+  const res = await runLoop({
+    prompt: 'x',
+    produce: () => 'still broken',
+    review: () => ({ verdict: 'FAIL', failures: [{ severity: 'blocking', summary: 'nope' }], tokens: 10 }),
+    budget: makeBudget({ maxIterations: 3 }),
+  });
+  assert.strictEqual(res.verdict, 'FAIL');
+  assert(res.stopped === 'max-iterations' || res.stopped === 'no-improvement');
+  assert(res.iterations <= 3);
+});
+t('loop: MONETA token ceiling from env halts the loop', async () => {
+  const prev = process.env.ZOILUS_MAX_TOKENS;
+  process.env.ZOILUS_MAX_TOKENS = '150';
+  try {
+    const res = await runLoop({
+      prompt: 'x', produce: () => 'broken',
+      review: () => ({ verdict: 'FAIL', failures: [{ severity: 'blocking', summary: 'a' }], tokens: 100 }),
+      budget: makeBudget({ maxIterations: 99 }),
+    });
+    assert.strictEqual(res.budget.stopped, 'max-tokens');
+  } finally { if (prev === undefined) delete process.env.ZOILUS_MAX_TOKENS; else process.env.ZOILUS_MAX_TOKENS = prev; }
+});
+
+// --- sibling detection + routing (ZOI-08, ZOI-10) ---
+t('siblings: detects installed god dirs and lists missing', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'zoilus-sib-'));
+  fs.mkdirSync(path.join(tmp, 'horkos'));
+  fs.mkdirSync(path.join(tmp, 'veritas'));
+  fs.mkdirSync(path.join(tmp, 'not-a-god'));
+  const s = siblings.detect([tmp]);
+  assert(s.installed.includes('horkos') && s.installed.includes('veritas'));
+  assert(!s.installed.includes('not-a-god'));
+  assert(s.missing.includes('chiron'));
+});
+t('siblings: recommends only missing natural pairs', () => {
+  const rec = siblings.recommend(['horkos']).map((r) => r.name);
+  assert(!rec.includes('horkos'));
+  assert(rec.includes('chiron') && rec.includes('moneta'));
+});
+t('route: prose -> veritas when installed, native when not', () => {
+  assert.strictEqual(siblings.routeLens('prose', ['veritas']), 'veritas');
+  assert.strictEqual(siblings.routeLens('prose', []), 'zoilus-native');
+  assert.strictEqual(siblings.routeLens('correctness', ['veritas']), 'zoilus-native');
+});
+
+// --- LOGOS construct/refine scaffolds (ZOI-06) ---
+t('LOGOS construct skeleton carries the required structure', () => {
+  const s = logos.constructSkeleton('review pull requests');
+  for (const part of ['EXPERT ROLE', 'clarifying question', 'Constraints', 'Output format', 'PLACEHOLDERS', 'review pull requests']) {
+    assert(s.includes(part), 'construct skeleton missing: ' + part);
+  }
+});
+t('LOGOS refine scaffold carries diagnose-then-rewrite', () => {
+  const s = logos.refineScaffold('do the thing');
+  assert(/Diagnosis/.test(s) && /Improved prompt/.test(s) && /Key upgrades/.test(s));
+  assert(s.includes('do the thing'));
+});
+
+(async () => {
+  for (const { name, fn } of tests) {
+    try { await fn(); pass++; console.log('  ok  ' + name); }
+    catch (e) { fail++; console.log('FAIL  ' + name + '\n      ' + e.message); }
+  }
+  console.log('\n' + pass + '/' + (pass + fail) + ' passed');
+  process.exit(fail ? 1 : 0);
+})();

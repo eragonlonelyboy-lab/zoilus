@@ -30,7 +30,7 @@ ZOILUS reviews the *quality of execution* of a finished artifact against a world
 1. **Classify the artifact** → pick the lens set: `zoilus lenses <type>` (code / regex / spec / architecture / prose / copy / data / generic). Load each lens's rubric with `zoilus rubric <name>`.
 2. **Blind the artifact** → `zoilus strip <file>` (removes reasoning/self-assessment sections and asides).
 3. **Run the panel** → spawn one independent critic per lens (use the Agent tool for real independence; each gets ONLY the blinded artifact + that lens's rubric + "reject on doubt; concrete failures ranked; no manufactured faults"). Collect ranked failures per lens.
-4. **Verdict** → FAIL if any lens has a blocking failure, else PASS. Write it: a verdict record (see references/ledger format) to `.zoilus/verdicts/`.
+4. **Verdict** → scored, not vibes. Each lens gets a 0-10 score; `lib/verdict.js computeVerdict` fails the whole review if ANY lens has a blocking failure OR scores below its bar (8 for code/spec/data, 7.5 for taste-heavy prose/copy — no averaging), and derives a confidence. Write the record to `.zoilus/verdicts/`. Route a lens to a sibling god when installed (`zoilus route <lens>`: prose/copy → VERITAS, design → CALLIOPE, completion → HORKOS), else judge it natively.
 5. **Loop (if FAIL and asked to improve)** → hand the failures to **LOGOS** (`references/logos.md`): re-forge the producer's instruction with the named failures as MUST-FIX constraints (`forgeRetry`), re-produce, re-review. Governed by the **budget**: default 3 iterations, halt on token ceiling (MONETA), halt on no-improvement (a pass that fixes nothing new). Never loop unattended forever.
 
 ## LOGOS — the prompt engine (also standalone)
@@ -40,7 +40,7 @@ LOGOS forges instructions. Two modes (see references/logos.md):
 - **Refine** (harvested #44): diagnose why a prompt underperforms (against role/context/task/constraints/format/success-criteria) and rewrite it copy-ready.
 - **Re-forge** (in-loop): inject a review's named failures as must-fix constraints so the next attempt cannot repeat them.
 
-Callable standalone when you or the user just want to forge or fix a prompt — not only inside a loop.
+Callable standalone when you or the user just want to forge or fix a prompt — not only inside a loop. CLI scaffolds: `zoilus forge --construct "<job>"` and `zoilus forge --refine <file>`.
 
 ## Rubric packs (the world-class bars)
 
