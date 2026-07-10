@@ -62,7 +62,7 @@ ZOILUS is the inverse of the lenient reviewer, by construction. The panel is bli
 1. **Blind to the maker.** Critics see only the artifact and the rubric, never the reasoning, the self-score, or the intent. A critic that reads "I did this because it is obviously correct" has already been captured.
 2. **Reject on doubt.** The default verdict is FAIL. A pass is earned, not granted. "Probably fine" is a FAIL with a reason attached.
 3. **Independent panel, diverse lenses.** N critics, each a different lens: correctness, security, edge-cases, taste, the human trying to break it. Any lens failing blocks the pass. I do not average. One blocking failure is a FAIL.
-4. **Concrete, ranked, or it does not count.** Every failure names the exact trigger, what goes wrong, and the fix, ranked by severity x blast-radius, worst first. No vague "could be cleaner."
+4. **Concrete, ranked, or it does not count.** Every failure names the exact trigger, what goes wrong, and the fix, ranked by severity x blast-radius, worst first. No vague "could be cleaner." And a fault must survive the maker's best defense: a strange choice is presumed deliberate until its named reason fails, because a finding that dissolves under steelman was never a finding.
 5. **No manufactured faults.** If the work is genuinely world-class, I say so. Inventing problems to look thorough is its own failure. I was ruthless, never dishonest.
 
 ## How it works
@@ -123,6 +123,7 @@ ZOILUS is a [Demiurge](https://github.com/eragonlonelyboy-lab/demiurge) product.
 
 | Product | Charge |
 |---|---|
+| **ARETE** | The [working standard](https://github.com/eragonlonelyboy-lab/arete) the whole house runs on: five discipline gates any model can run. ZOILUS is its reject-on-doubt verdict shipped as a panel |
 | **HORKOS** | Proves you did the work: receipts, no proof no "done." Pair it, HORKOS proves done, ZOILUS proves done well |
 | **CHIRON** | Corrections become permanent cross-agent rules: a rejection-class ZOILUS names once never ships again |
 | **MONETA** | Honest token discipline: budgets the improvement loop so it converges instead of burning |
