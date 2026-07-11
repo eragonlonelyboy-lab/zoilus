@@ -118,6 +118,13 @@ t('architecture rubric carries SPOF + 10x/100x scaling discipline', () => {
   assert(/single point of failure|spof/.test(r));
   assert(/10x|100x|blast.?radius/.test(r));
 });
+t('framework rewrite rubric rejects speculation and requires a discriminating spike', () => {
+  const r = (rubrics.load('framework-rewrite') || '').toLowerCase();
+  assert(/speculative rewrite|rewrite.*blocking failure/.test(r));
+  assert(/cheapest discriminating spike/.test(r));
+  assert(rubrics.lensesFor('architecture').includes('framework-rewrite'));
+  assert(rubrics.lensesFor('code').includes('framework-rewrite'));
+});
 t('copy-critique rubric carries the reader-dropoff discipline', () => {
   const r = (rubrics.load('copy-critique') || '').toLowerCase();
   assert(/drop.?off|drops? off|lose (the|them|reader)/.test(r));

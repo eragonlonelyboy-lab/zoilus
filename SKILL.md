@@ -27,6 +27,16 @@ ZOILUS reviews the *quality of execution* of a finished artifact against a world
 
 ## The review workflow
 
+### Framework and rewrite boundary
+
+When reviewing a framework adoption, rewrite, hosting change or major migration:
+
+1. Steelman the current system and name what it already protects.
+2. Separate orchestration pain from behavioral pain. A new framework may fix the first; the second follows the rewrite.
+3. Name the truth the project must continue to own, including data, authorization and quality gates.
+4. Demand the cheapest discriminating spike. Never rewrite the working subsystem merely to evaluate the alternative.
+5. Treat architecture, hosting, protected data and costly migration as human-reserved decisions.
+
 1. **Classify the artifact** → pick the lens set: `zoilus lenses <type>` (code / regex / spec / architecture / prose / copy / data / generic). Load each lens's rubric with `zoilus rubric <name>`.
 2. **Blind the artifact** → `zoilus strip <file>` (removes reasoning/self-assessment sections and asides).
 3. **Run the panel** → spawn one independent critic per lens (use the Agent tool for real independence; each gets ONLY the blinded artifact + that lens's rubric + "reject on doubt; concrete failures ranked; no manufactured faults"). Collect ranked failures per lens.
