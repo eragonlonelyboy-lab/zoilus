@@ -1,6 +1,6 @@
 {
   "name": "demiurge-zoilus",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The merciless critic. Your AI grades its own homework; ZOILUS is the examiner who fails it.",
   "bin": { "zoilus": "bin/zoilus.js" },
   "scripts": {
