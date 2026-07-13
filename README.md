@@ -75,6 +75,8 @@ ZOILUS is the inverse of the lenient reviewer, by construction. The panel is bli
 
 ## Install for your agent
 
+> **From npm:** `npm install -g demiurge-zoilus`, then `zoilus setup` — or `npx demiurge-zoilus setup` with no install. (Skill copy uses the source clone below.)
+
 ZOILUS ships as a Claude Code skill plus a light Node CLI. Zero-config to start.
 
 **Claude Code** (reference implementation, ships today):
